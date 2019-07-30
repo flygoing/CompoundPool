@@ -1,0 +1,31 @@
+{
+  "name": "compound-pooling",
+  "version": "1.0.0",
+  "description": "Solidity contract for pooling compound tokens where a beneficiary has control of the interest earned",
+  "files": [
+    "/contracts/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flygoing/compound-pooling.git"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "compound",
+    "interest",
+    "contracts"
+  ],
+  "author": "Nate Welch <nate@totle.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flygoing/compound-pooling/issues"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.3.0",
+    "truffle-hdwallet-provider": "^1.0.15"
+  },
+  "devDependencies": {
+    "truffle": "^5.0.29"
+  }
+}
