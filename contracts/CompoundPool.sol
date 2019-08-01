@@ -11,6 +11,8 @@ import { IComptroller } from "./interface/IComptroller.sol";
 
 /**
  * @title CompoundPool
+ * @author Nate Welch <github.com/flyging>
+ * @notice Based on Zefram Lou's implementation https://github.com/ZeframLou/pooled-cdai
  * @dev A bank that will pool compound tokens and allows the beneficiary to withdraw
  */
 contract CompoundPool is ERC20, Ownable {
@@ -34,7 +36,7 @@ contract CompoundPool is ERC20, Ownable {
     {
         compoundToken = _compoundToken;
         depositToken = _depositToken;
-    	beneficiary = _beneficiary;
+        beneficiary = _beneficiary;
         _approveDepositToken(1);
 
         // Enter compound token market
