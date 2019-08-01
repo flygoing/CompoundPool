@@ -14,7 +14,7 @@ contract('CompoundPool', (accounts) => {
         comptrollerMock = await ComptrollerMock.new()
         depositTokenMock = await DepositTokenMock.new()
         compoundERC20Mock = await CompoundERC20Mock.new(depositTokenMock.address)
-        compoundPool = await CompoundPool.new(comptrollerMock.address, compoundERC20Mock.address, depositTokenMock.address, accounts[0])
+        compoundPool = await CompoundPool.new("Test Pool", "TPOOL", comptrollerMock.address, compoundERC20Mock.address, depositTokenMock.address, accounts[0])
         await depositTokenMock.approve(compoundPool.address, "1000000000000000000000000000000")
         await depositTokenMock.transfer(compoundERC20Mock.address, "10000000000000000000")
     })
@@ -30,11 +30,11 @@ contract('CompoundPool', (accounts) => {
         await compoundPool.donate("100000000000000000")
         assert.equal((await compoundPool.excessDepositTokens.call()).toString(),"102100999999999944")
 
-        
         //Should fail to withdraw more than excess deposit amount, but still less than total holdings
         await compoundPool.withdrawInterest(accounts[0],"900000000000000000").then(function(){
             assert.fail("Should have failed withdrawing more than excess interest")
         }).catch(function(){})
+
         //Withdrawing <= the user's balance should work        
         await compoundPool.withdraw("1000000000000000000")
 
@@ -51,7 +51,7 @@ contract('CompoundPool', (accounts) => {
         //Beneficiary should be able to withdraw all interest
         await compoundPool.withdrawInterest(accounts[0],"103513020015506068")
         
-        assert.equal((await compoundERC20Mock.balanceOf(compoundPool.address)).toString(),"1")
+        assert.equal((await compoundERC20Mock.balanceOf(compoundPool.address)).toString(),"1") //1 dust because my CompoundERC20Mock does sad math with rounding and stuff
 
     })
 
