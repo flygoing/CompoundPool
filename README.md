@@ -43,6 +43,15 @@ Only the beneficiary has access to this. The beneficiary can't withdraw more tha
     function withdrawInterest(address _to, uint256 _amount) public onlyBeneficiary returns (uint256) {
 ```
 
+## Wrap standing donations
+
+This is a safety function in case someone accidental sends deposit tokens directly to the CompoundPool contract. Calling this will automatically wrap those mistaken deposit tokens and be treated as donations.
+
+**CompoundPool.sol**
+```
+    function wrapStandingDonations() public returns (uint256) {
+```
+
 ## Change the beneficiary
 
 Only the owner has access to this.
