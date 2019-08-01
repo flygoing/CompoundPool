@@ -6,9 +6,9 @@ Solidity smart contract that allows people to pool a "deposit token" into compou
 
 ## Deposit
 
-Deposit your deposit tokens (i.e. DAI) to the pool. You can always withdraw exactly your total deposit, not more, not less.
+Deposit your deposit tokens (e.g. DAI) to the pool. You can always withdraw exactly your total deposit, not more, not less. Must have allowances set before.
 
-**CompoundPool.sol.sol**
+**CompoundPool.sol**
 ```
 function deposit(uint256 amount) public view returns (bool)
 ```
@@ -18,11 +18,20 @@ The caller of this function must have already set an allowance for the CompoundP
 
 ## Withdraw
 
-Withdraw your deposit tokens (i.e. DAI) from the pool.
+Withdraw your deposit tokens (e.g. DAI) from the pool.
 
 **CompoundPool.sol**
 ```
 function withdraw(uint256 amount) public view returns (bool)
+```
+
+## Donate
+
+Donate an amount of deposit tokens (e.g. DAI) from the pool. All this does is transfer in the deposit token and wrap it on Compound. You can achieve the same affect for less gas by just sending the Compound token to the CompoundPool contract if you already have the wrapped token.
+
+**CompoundPool.sol**
+```
+function donate(uint256 amount) public view returns (bool)
 ```
 
 ## Withdraw Interest

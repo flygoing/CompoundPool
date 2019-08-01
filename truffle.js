@@ -1,12 +1,12 @@
 module.exports = {
   networks: {
-    development: {
-      host: 'localhost',
-      port: 8545,
-      network_id: '*', // Match any network id
-      gas: 100000000, // High
-      gasPrice: 0
-    }
+//    development: {
+//      host: 'localhost',
+//      port: 8545,
+//      network_id: '*', // Match any network id
+//      gas: 100000000, // High
+//      gasPrice: 0
+//    }
   },
   compilers: {
     solc: {
@@ -14,9 +14,10 @@ module.exports = {
       settings: {
         optimizer: {
           enabled: true,
-          runs: 200
+          runs: 999
         }
-      }
+      },
+      evmVersion: "petersburg"
     }
   }
 };

@@ -35,7 +35,7 @@ contract CompoundPool is ERC20, Ownable {
         compoundToken = _compoundToken;
         depositToken = _depositToken;
     	beneficiary = _beneficiary;
-        _approve();
+        _approveDepositToken(1);
 
         // Enter compound token market
         address[] memory markets = new address[](1);
@@ -45,7 +45,7 @@ contract CompoundPool is ERC20, Ownable {
     }
 
     modifier onlyBeneficiary() {
-        require(msg.sender == address(beneficiary), "Bank::onlyBeneficiary: Only callable by owner");
+        require(msg.sender == beneficiary, "CompoundPool::onlyBeneficiary: Only callable by beneficiary");
         _;
     }
 
@@ -54,32 +54,23 @@ contract CompoundPool is ERC20, Ownable {
     }
 
     function withdrawInterest(address _to, uint256 _amount) public onlyBeneficiary returns (uint256) {
-        uint availableDepositTokens = excessDepositTokens();
-        require(_amount <= availableDepositTokens, "Bank::sendInterest: Not enough excess deposit token");
-
         // redeem `_amount` of `depositToken`s from compound
-        require(compoundToken.redeemUnderlying(_amount) == 0, "Bank::withdrawInterest: Compound redeem failed");
+        require(compoundToken.redeemUnderlying(_amount) == 0, "CompoundPool::withdrawInterest: Compound redeem failed");
+
+        require(depositTokenStoredBalance() >= totalSupply(), "CompoundPool::withdrawInterest: Not enough excess deposit token");
 
         depositToken.transfer(_to, _amount);
     }
 
     function deposit(uint256 _amount) public {
         // transfer `_amount` of deposit tokens from `msg.sender`
-        require(depositToken.transferFrom(msg.sender, address(this), _amount), "Bank::deposit: Transfer failed");
-
-        // use `_amount` of deposit tokens to mint compound tokens for the bank
-        require(compoundToken.mint(_amount) == 0, "Bank::deposit: Compound mint failed");
+        require(depositToken.transferFrom(msg.sender, address(this), _amount), "CompoundPool::deposit: Transfer failed");
+        _approveDepositToken(_amount);
+        // use `_amount` of deposit tokens to mint compound tokens for the pool
+        require(compoundToken.mint(_amount) == 0, "CompoundPool::deposit: Compound mint failed");
     
         // mint `amount` bank funds for `msg.sender`
         _mint(msg.sender, _amount);
-    }
-
-    function donate(uint256 _amount) public {
-        // transfer `_amount` of deposit tokens from `msg.sender`
-        require(depositToken.transferFrom(msg.sender, address(this), _amount), "Bank::donate: Transfer failed");
-
-        // use `_amount` of deposit tokens to mint compound tokens for the bank
-        require(compoundToken.mint(_amount) == 0, "Bank::deposit: Compound mint failed");
     }
 
     function withdraw(uint256 _amount) public {
@@ -87,21 +78,36 @@ contract CompoundPool is ERC20, Ownable {
         _burn(msg.sender, _amount);
 
         // redeem `_amount` of depositTokens from compound
-        require(compoundToken.redeemUnderlying(_amount) == 0, "Bank::withdraw: Compound redeem failed");
+        require(compoundToken.redeemUnderlying(_amount) == 0, "CompoundPool::withdraw: Compound redeem failed");
 
         // transfer deposit token to msg.sender
-        require(depositToken.transfer(msg.sender, _amount), "Bank::withdraw: Transfer failed");
+        require(depositToken.transfer(msg.sender, _amount), "CompoundPool::withdraw: Transfer failed");
     }
 
+    function donate(uint256 _amount) public {
+        // transfer `_amount` of deposit tokens from `msg.sender`
+        require(depositToken.transferFrom(msg.sender, address(this), _amount), "CompoundPool::donate: Transfer failed");
+        _approveDepositToken(_amount);
+        // use `_amount` of deposit tokens to mint compound tokens for the pool
+        require(compoundToken.mint(_amount) == 0, "CompoundPool::donate: Compound mint failed");
+    }
+    
     function excessDepositTokens() public returns (uint256) {
         return compoundToken.exchangeRateCurrent().mul(compoundToken.balanceOf(address(this))).div(PRECISION).sub(totalSupply());
     }
 
+    function depositTokenStoredBalance() internal returns (uint256) {
+        return compoundToken.exchangeRateStored().mul(compoundToken.balanceOf(address(this))).div(PRECISION);
+    }
+
     function wrapStandingDonations() public {
+        _approveDepositToken(depositToken.balanceOf(address(this)));
         require(compoundToken.mint(depositToken.balanceOf(address(this))) == 0, "Failed to mint compound token");
     }
 
-    function _approve() public {
-        depositToken.approve(address(compoundToken),uint256(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff));
+    function _approveDepositToken(uint256 _minimum) internal {
+        if(depositToken.allowance(address(this), address(compoundToken)) < _minimum){
+            depositToken.approve(address(compoundToken),uint256(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff));
+        }
     }
 }
