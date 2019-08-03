@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/flygoing/compound-pooling.git"
+    "url": "https://github.com/flygoing/CompoundPool.git"
   },
   "keywords": [
     "solidity",
@@ -23,7 +23,7 @@
   "author": "Nate Welch <nate@totle.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/flygoing/compound-pooling/issues"
+    "url": "https://github.com/flygoing/CompoundPool/issues"
   },
   "dependencies": {
     "openzeppelin-solidity": "^2.3.0"
