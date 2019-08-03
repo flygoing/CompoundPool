@@ -3,6 +3,7 @@
 
 Solidity smart contract that allows people to pool a "deposit token" into compound tokens, and the interest is given to a beneficiary.
 
+WARNING: Unaudited
 
 ## Deposit
 
