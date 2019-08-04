@@ -1,6 +1,6 @@
 {
   "name": "compound-pooling",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Solidity contract for pooling compound tokens where a beneficiary has control of the interest earned",
   "scripts": {
     "test": "node_modules/.bin/truffle test",
