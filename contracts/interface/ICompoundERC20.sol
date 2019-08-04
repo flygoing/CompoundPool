@@ -11,6 +11,7 @@ interface ICompoundERC20 {
   function transfer(address recipient, uint256 amount) external returns (bool);
 
   function balanceOf(address account) external view returns (uint);
+  function balanceOfUnderlying(address account) external view returns (uint);
   function decimals() external view returns (uint);
   function underlying() external view returns (address);
   function exchangeRateStored() external view returns (uint);
