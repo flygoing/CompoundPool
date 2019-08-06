@@ -15,4 +15,5 @@ interface ICompoundERC20 {
   function decimals() external view returns (uint);
   function underlying() external view returns (address);
   function exchangeRateStored() external view returns (uint);
+  function supplyRatePerBlock() external view returns (uint);
 }
